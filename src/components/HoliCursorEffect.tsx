@@ -30,10 +30,26 @@ const HOLI_COLORS = [
 export const HoliCursorEffect: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<HoliParticle[]>([]);
-  const lastMousePos = useRef<{ x: number; y: number } | null>(null);
   const animFrameId = useRef<number | null>(null);
 
   useEffect(() => {
+    // Check if the current device is mobile or touch-only
+    const isMobileDevice = () => {
+      if (typeof window === 'undefined') return true;
+      return (
+        window.innerWidth < 768 ||
+        window.matchMedia('(pointer: coarse)').matches ||
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent || ''
+        )
+      );
+    };
+
+    // If mobile, do not activate any cursor trail or burst effects
+    if (isMobileDevice()) {
+      return;
+    }
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -43,6 +59,10 @@ export const HoliCursorEffect: React.FC = () => {
     let height = (canvas.height = window.innerHeight);
 
     const handleResize = () => {
+      if (isMobileDevice()) {
+        if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
+        return;
+      }
       if (!canvas) return;
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
@@ -50,9 +70,9 @@ export const HoliCursorEffect: React.FC = () => {
 
     window.addEventListener('resize', handleResize);
 
-    // Helper to spawn trailing dust particles along mouse path
+    // Desktop: Spawn trailing colored dust particles along mouse path
     const spawnMoveParticles = (x: number, y: number) => {
-      const count = 3; // 3 particles per move event for smooth dense trail
+      const count = 3;
       for (let i = 0; i < count; i++) {
         const color = HOLI_COLORS[Math.floor(Math.random() * HOLI_COLORS.length)];
         const angle = Math.random() * Math.PI * 2;
@@ -67,7 +87,7 @@ export const HoliCursorEffect: React.FC = () => {
           radius,
           color,
           alpha: 1,
-          decay: Math.random() * 0.025 + 0.018, // Fade out smoothly
+          decay: Math.random() * 0.025 + 0.018,
           friction: 0.96,
           gravity: 0.04,
           grow: 0.05,
@@ -75,9 +95,8 @@ export const HoliCursorEffect: React.FC = () => {
       }
     };
 
-    // Helper to trigger a massive Holi powder burst on click
+    // Desktop: Trigger Holi powder explosion on click
     const spawnBurst = (x: number, y: number) => {
-      // 1. Canvas particle burst (Holi powder spray)
       const burstCount = 65;
       for (let i = 0; i < burstCount; i++) {
         const color = HOLI_COLORS[Math.floor(Math.random() * HOLI_COLORS.length)];
@@ -94,13 +113,12 @@ export const HoliCursorEffect: React.FC = () => {
           color,
           alpha: 1,
           decay: Math.random() * 0.02 + 0.014,
-          friction: 0.93, // Powder slows down as it blooms
+          friction: 0.93,
           gravity: 0.07,
-          grow: 0.15, // Clouds slightly expand
+          grow: 0.15,
         });
       }
 
-      // 2. Micro confetti burst from click point
       confetti({
         particleCount: 30,
         spread: 75,
@@ -116,36 +134,19 @@ export const HoliCursorEffect: React.FC = () => {
       });
     };
 
-    // Mouse Move Listener
     const handleMouseMove = (e: MouseEvent) => {
-      lastMousePos.current = { x: e.clientX, y: e.clientY };
+      if (isMobileDevice()) return;
       spawnMoveParticles(e.clientX, e.clientY);
     };
 
-    // Mouse Click / Burst Listener
     const handleClick = (e: MouseEvent) => {
+      if (isMobileDevice()) return;
       spawnBurst(e.clientX, e.clientY);
     };
 
-    // Touch Support for mobile
-    const handleTouchMove = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        const touch = e.touches[0];
-        spawnMoveParticles(touch.clientX, touch.clientY);
-      }
-    };
-
-    const handleTouchStart = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        const touch = e.touches[0];
-        spawnBurst(touch.clientX, touch.clientY);
-      }
-    };
-
+    // Attach listeners only for mouse / desktop
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('click', handleClick);
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
 
     // Main Canvas Render Loop
     const render = () => {
@@ -155,7 +156,6 @@ export const HoliCursorEffect: React.FC = () => {
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
 
-        // Update physics
         p.vx *= p.friction;
         p.vy *= p.friction;
         p.vy += p.gravity;
@@ -164,13 +164,11 @@ export const HoliCursorEffect: React.FC = () => {
         p.radius += p.grow;
         p.alpha -= p.decay;
 
-        // If dead, remove particle
         if (p.alpha <= 0.01) {
           particles.splice(i, 1);
           continue;
         }
 
-        // Draw soft Holi colored powder dust circle with radial blur
         ctx.save();
         ctx.globalAlpha = Math.max(0, p.alpha);
         ctx.fillStyle = p.color;
@@ -192,8 +190,6 @@ export const HoliCursorEffect: React.FC = () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('click', handleClick);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchstart', handleTouchStart);
       if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
     };
   }, []);
@@ -201,7 +197,7 @@ export const HoliCursorEffect: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[9999]"
+      className="hidden md:block fixed inset-0 pointer-events-none z-[9999]"
       style={{ width: '100vw', height: '100vh' }}
     />
   );
