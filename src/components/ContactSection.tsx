@@ -186,7 +186,7 @@ export const ContactSection: React.FC = () => {
               </a>
               <span className="w-1 h-1 rounded-full bg-gray-700" />
               <a
-                href="https://linkedin.com/in/sarthak-tomar"
+                href="https://www.linkedin.com/in/sarthak-singh-tomar-a7495428b"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-xs font-medium text-gray-300 hover:text-white transition-colors"

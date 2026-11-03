@@ -81,7 +81,7 @@ export const Navbar: React.FC = () => {
           </a>
 
           <a
-            href="https://linkedin.com/in/sarthak-tomar"
+            href="https://www.linkedin.com/in/sarthak-singh-tomar-a7495428b"
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-xl bg-gray-900 text-gray-300 hover:text-white hover:bg-gray-800 border border-gray-800 transition-colors"
@@ -132,7 +132,7 @@ export const Navbar: React.FC = () => {
                 <GithubIcon className="w-4 h-4" />
               </a>
               <a
-                href="https://linkedin.com/in/sarthak-tomar"
+                href="https://www.linkedin.com/in/sarthak-singh-tomar-a7495428b"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg bg-gray-900 text-gray-300"

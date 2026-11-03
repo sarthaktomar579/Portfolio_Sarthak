@@ -28,7 +28,7 @@ export const Footer: React.FC = () => {
           </a>
           <span>•</span>
           <a
-            href="https://linkedin.com/in/sarthak-tomar"
+            href="https://www.linkedin.com/in/sarthak-singh-tomar-a7495428b"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-white transition-colors"
