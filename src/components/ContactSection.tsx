@@ -20,9 +20,29 @@ export const ContactSection: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   const email = "sarthakt579@gmail.com";
   const phone = "+91 6377525805";
+
+  const validateEmail = (val: string): string | null => {
+    const trimmed = val.trim();
+    if (!trimmed) {
+      return "Email address is required.";
+    }
+    if (!trimmed.includes('@')) {
+      return "Please include an '@' in your email address.";
+    }
+    const parts = trimmed.split('@');
+    if (!parts[1] || !parts[1].includes('.')) {
+      return "Please include a valid domain after '@' (e.g. gmail.com).";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmed)) {
+      return "Please enter a valid email format.";
+    }
+    return null;
+  };
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(email);
@@ -63,6 +83,20 @@ export const ContactSection: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const err = validateEmail(formData.email);
+    if (err) {
+      setEmailError(err);
+      setErrorMsg(err);
+      return;
+    }
+    setEmailError(null);
+
+    if (!formData.name.trim()) {
+      setErrorMsg("Please enter your name.");
+      return;
+    }
+
     if (!formData.message.trim()) {
       setErrorMsg("Please enter a message before sending.");
       return;
@@ -294,17 +328,44 @@ export const ContactSection: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono uppercase text-gray-400 mb-1.5">
-                      Your Email
-                    </label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-xs font-mono uppercase text-gray-400">
+                        Your Email
+                      </label>
+                      {emailError && (
+                        <span className="text-red-400 text-[11px] font-sans font-medium animate-pulse">
+                          {emailError}
+                        </span>
+                      )}
+                    </div>
                     <input
                       type="email"
                       required
                       placeholder="e.g. recruiter@company.com"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-gray-900/80 border border-gray-800 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500 transition-colors"
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setFormData({ ...formData, email: val });
+                        if (emailError) {
+                          setEmailError(validateEmail(val));
+                        }
+                      }}
+                      onBlur={() => {
+                        if (formData.email) {
+                          setEmailError(validateEmail(formData.email));
+                        }
+                      }}
+                      className={`w-full px-4 py-2.5 rounded-xl bg-gray-900/80 border text-sm text-white placeholder-gray-500 focus:outline-none transition-colors ${
+                        emailError
+                          ? 'border-red-500 bg-red-950/20 ring-1 ring-red-500/40'
+                          : 'border-gray-800 focus:border-red-500'
+                      }`}
                     />
+                    {emailError && (
+                      <p className="text-[11px] text-red-400 mt-1.5 flex items-center gap-1 font-medium">
+                        <span>⚠️ {emailError}</span>
+                      </p>
+                    )}
                   </div>
 
                   <div>
