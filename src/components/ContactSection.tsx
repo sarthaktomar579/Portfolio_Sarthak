@@ -38,6 +38,10 @@ export const ContactSection: React.FC = () => {
   };
 
   const getMailtoUrl = () => {
+    const hasDetails = formData.name || formData.email || formData.message;
+    if (!hasDetails) {
+      return `mailto:${email}`;
+    }
     const subject = encodeURIComponent(`Portfolio Message from ${formData.name || 'Visitor'}`);
     const body = encodeURIComponent(
       `Hi Sarthak,\n\nName: ${formData.name || 'Not provided'}\nEmail: ${formData.email || 'Not provided'}\n\nMessage:\n${formData.message}\n\n---\nSent from Portfolio Website`
@@ -47,11 +51,6 @@ export const ContactSection: React.FC = () => {
 
   const handleSendViaEmailApp = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!formData.message.trim()) {
-      setErrorMsg("Please enter a message before sending.");
-      return;
-    }
-
     window.location.href = getMailtoUrl();
     setSubmitted(true);
     confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
@@ -95,7 +94,7 @@ export const ContactSection: React.FC = () => {
       console.error("Form delivery error:", err);
       // If third-party API is slow, down, or requires initial confirmation, inform user and offer direct 1-click email launch
       setErrorMsg(
-        "Direct web delivery is currently queuing or requires initial activation. Click 'Open in Gmail / Email App' below to send your message directly without losing any text!"
+        "Direct web delivery is currently queuing or requires initial activation. Click 'Send via mailto' below to send your message directly without losing any text!"
       );
     } finally {
       setIsSubmitting(false);
@@ -252,7 +251,7 @@ export const ContactSection: React.FC = () => {
                       className="px-4 py-2 rounded-xl bg-red-600/30 hover:bg-red-600 text-red-300 hover:text-white text-xs font-semibold border border-red-500/40 flex items-center gap-1.5 transition-colors"
                     >
                       <Mail className="w-3.5 h-3.5" />
-                      <span>Send Direct Copy via Gmail / Mail App</span>
+                      <span>Send Direct Copy via mailto</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </button>
 
