@@ -398,7 +398,15 @@ export const InteractiveResume: React.FC = () => {
                 <span>• Institute: IIIT Kota, Rajasthan</span>
                 <span>• Hometown & Current Location: Gwalior, Madhya Pradesh</span>
                 <span>• Focus: Full Stack Systems (Node.js & FastAPI), AI Systems & DSA</span>
-                <span>• Contact: sarthakt579@gmail.com</span>
+                <span>
+                  • Contact:{' '}
+                  <a
+                    href="mailto:sarthakt579@gmail.com"
+                    className="text-red-400 hover:text-red-300 underline"
+                  >
+                    sarthakt579@gmail.com
+                  </a>
+                </span>
               </div>
             </div>
           )}

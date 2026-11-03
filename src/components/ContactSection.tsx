@@ -37,14 +37,6 @@ export const ContactSection: React.FC = () => {
     setTimeout(() => setCopiedPhone(false), 2000);
   };
 
-  const getGmailComposeUrl = () => {
-    const subject = encodeURIComponent(`Portfolio Message from ${formData.name || 'Visitor'}`);
-    const body = encodeURIComponent(
-      `Hi Sarthak,\n\nName: ${formData.name || 'Not provided'}\nEmail: ${formData.email || 'Not provided'}\n\nMessage:\n${formData.message}\n\n---\nSent from Portfolio Website`
-    );
-    return `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`;
-  };
-
   const getMailtoUrl = () => {
     const subject = encodeURIComponent(`Portfolio Message from ${formData.name || 'Visitor'}`);
     const body = encodeURIComponent(
@@ -60,13 +52,7 @@ export const ContactSection: React.FC = () => {
       return;
     }
 
-    const isMobile = typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if (isMobile) {
-      window.location.href = getMailtoUrl();
-    } else {
-      window.open(getGmailComposeUrl(), '_blank');
-    }
-
+    window.location.href = getMailtoUrl();
     setSubmitted(true);
     confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
   };
@@ -153,11 +139,9 @@ export const ContactSection: React.FC = () => {
                   <div>
                     <h4 className="text-xs font-mono text-gray-400 uppercase">Direct Email</h4>
                     <a
-                      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${email}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href={`mailto:${email}`}
                       className="text-sm font-semibold text-white hover:text-red-400 transition-colors inline-flex items-center gap-1"
-                      title="Compose in Gmail"
+                      title="Send email via mailto link"
                     >
                       <span>{email}</span>
                       <ExternalLink className="w-3 h-3 text-red-400" />
@@ -337,7 +321,7 @@ export const ContactSection: React.FC = () => {
                         className="w-full py-2.5 px-3 rounded-lg bg-amber-500 text-black font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-amber-400 transition-colors shadow-md"
                       >
                         <Mail className="w-3.5 h-3.5" />
-                        <span>Open & Send in Gmail / Mail App (Guaranteed Delivery)</span>
+                        <span>Open Mail App via mailto (Guaranteed Delivery)</span>
                       </button>
                     </div>
                   )}
@@ -362,10 +346,10 @@ export const ContactSection: React.FC = () => {
                       type="button"
                       onClick={() => handleSendViaEmailApp()}
                       className="py-3 px-4 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-200 font-semibold text-xs sm:text-sm border border-gray-700/80 hover:border-red-500/40 flex items-center justify-center gap-2 transition-colors"
-                      title="Direct compose in your native email app or Gmail"
+                      title="Direct compose in your native email app via mailto link"
                     >
                       <Mail className="w-4 h-4 text-red-400" />
-                      <span>Open in Gmail / Mail App</span>
+                      <span>Send via mailto</span>
                     </button>
                   </div>
                 </form>

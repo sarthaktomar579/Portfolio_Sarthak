@@ -37,11 +37,9 @@ export const Footer: React.FC = () => {
           </a>
           <span>•</span>
           <a
-            href="https://mail.google.com/mail/?view=cm&fs=1&to=sarthakt579@gmail.com"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="mailto:sarthakt579@gmail.com"
             className="text-red-400 hover:text-red-300 transition-colors"
-            title="Compose message in Gmail"
+            title="Send email to sarthakt579@gmail.com"
           >
             sarthakt579@gmail.com
           </a>
