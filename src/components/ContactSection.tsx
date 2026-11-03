@@ -17,7 +17,6 @@ export const ContactSection: React.FC = () => {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -56,49 +55,17 @@ export const ContactSection: React.FC = () => {
     confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg(null);
-    setIsSubmitting(true);
-
-    try {
-      // Send directly to sarthakt579@gmail.com
-      const res = await fetch("https://formsubmit.co/ajax/sarthakt579@gmail.com", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          _subject: `New Portfolio Message from ${formData.name}`,
-          _template: "table",
-          _captcha: "false"
-        })
-      });
-
-      if (!res.ok) {
-        throw new Error(`Server status: ${res.status}`);
-      }
-
-      const result = await res.json();
-      if (result.success === "false" || result.error) {
-        throw new Error(result.message || "Submission failed");
-      }
-
-      setSubmitted(true);
-      confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
-    } catch (err) {
-      console.error("Form delivery error:", err);
-      // If third-party API is slow, down, or requires initial confirmation, inform user and offer direct 1-click email launch
-      setErrorMsg(
-        "Direct web delivery is currently queuing or requires initial activation. Click 'Send via mailto' below to send your message directly without losing any text!"
-      );
-    } finally {
-      setIsSubmitting(false);
+    if (!formData.message.trim()) {
+      setErrorMsg("Please enter a message before sending.");
+      return;
     }
+
+    // Direct, infallible mailto trigger with prefilled name, email, and message
+    window.location.href = getMailtoUrl();
+    setSubmitted(true);
+    confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
   };
 
 
@@ -325,30 +292,13 @@ export const ContactSection: React.FC = () => {
                     </div>
                   )}
 
-                  <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
+                  <div className="pt-2">
                     <button
                       type="submit"
-                      disabled={isSubmitting}
-                      className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] disabled:opacity-50"
+                      className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-sm shadow-lg shadow-red-600/30 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.01]"
                     >
-                      {isSubmitting ? (
-                        <span>Sending via Web Form...</span>
-                      ) : (
-                        <>
-                          <Send className="w-4 h-4" />
-                          <span>Send via Web Form</span>
-                        </>
-                      )}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleSendViaEmailApp()}
-                      className="py-3 px-4 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-200 font-semibold text-xs sm:text-sm border border-gray-700/80 hover:border-red-500/40 flex items-center justify-center gap-2 transition-colors"
-                      title="Direct compose in your native email app via mailto link"
-                    >
-                      <Mail className="w-4 h-4 text-red-400" />
-                      <span>Send via mailto</span>
+                      <Send className="w-4 h-4" />
+                      <span>Send Message to Sarthak</span>
                     </button>
                   </div>
                 </form>
