@@ -323,9 +323,17 @@ export const InteractiveResume: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-gray-800/60 flex items-center justify-between text-xs text-amber-400/80 font-mono">
-                    <span>LeetCode Rating: Knight</span>
-                    <span>1500+ Solved</span>
+                  <div className="pt-4 border-t border-gray-800/60 flex items-center justify-between">
+                    <span className="text-xs text-amber-400/80 font-mono">LeetCode: Knight (1500+)</span>
+                    <a
+                      href="https://leetcode.com/u/Sarthak_Tomar579/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-400 hover:text-amber-300 underline"
+                    >
+                      <span>View LeetCode Profile (@Sarthak_Tomar579)</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
                   </div>
                 </div>
 
@@ -350,15 +358,18 @@ export const InteractiveResume: React.FC = () => {
                     </p>
                   </div>
 
-                  <a
-                    href="https://www.codechef.com/users/sarthak_stomar"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-xs font-semibold text-red-400 hover:text-red-300 underline"
-                  >
-                    <span>View CodeChef Profile (@sarthak_stomar)</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                  <div className="pt-4 border-t border-gray-800/60 flex items-center justify-between">
+                    <span className="text-xs text-red-400/80 font-mono">CodeChef: ★★★ Coder</span>
+                    <a
+                      href="https://www.codechef.com/users/sarthak_stomar"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-400 hover:text-red-300 underline"
+                    >
+                      <span>View CodeChef Profile (@sarthak_stomar)</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
                 </div>
 
               </div>

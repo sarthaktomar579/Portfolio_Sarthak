@@ -142,15 +142,25 @@ export const App: React.FC = () => {
 
           {/* Hero Quick Key Metrics Banner */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-14 max-w-4xl w-full">
-            <div className="glass-panel p-4 rounded-2xl border border-gray-800 text-center">
-              <div className="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono">1500+</div>
-              <div className="text-xs text-gray-400 font-medium mt-1">DSA Solved (LeetCode Knight)</div>
-            </div>
+            <a
+              href="https://leetcode.com/u/Sarthak_Tomar579/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="glass-panel p-4 rounded-2xl border border-gray-800 text-center hover:border-amber-500/40 hover:bg-amber-950/10 transition-all group block"
+            >
+              <div className="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono group-hover:scale-105 transition-transform">1500+</div>
+              <div className="text-xs text-gray-400 font-medium mt-1 group-hover:text-amber-300 transition-colors">DSA Solved (LeetCode Knight ↗)</div>
+            </a>
 
-            <div className="glass-panel p-4 rounded-2xl border border-gray-800 text-center">
-              <div className="text-2xl sm:text-3xl font-extrabold text-red-400 font-mono">★★★</div>
-              <div className="text-xs text-gray-400 font-medium mt-1">CodeChef Rating</div>
-            </div>
+            <a
+              href="https://www.codechef.com/users/sarthak_stomar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="glass-panel p-4 rounded-2xl border border-gray-800 text-center hover:border-red-500/40 hover:bg-red-950/10 transition-all group block"
+            >
+              <div className="text-2xl sm:text-3xl font-extrabold text-red-400 font-mono group-hover:scale-105 transition-transform">★★★</div>
+              <div className="text-xs text-gray-400 font-medium mt-1 group-hover:text-red-300 transition-colors">CodeChef Rating ↗</div>
+            </a>
 
             <div className="glass-panel p-4 rounded-2xl border border-gray-800 text-center">
               <div className="text-lg sm:text-xl font-extrabold text-cyan-400 font-mono">Node.js & FastAPI</div>
