@@ -17,6 +17,7 @@ export const ContactSection: React.FC = () => {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -55,17 +56,50 @@ export const ContactSection: React.FC = () => {
     confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.message.trim()) {
       setErrorMsg("Please enter a message before sending.");
       return;
     }
 
-    // Direct, infallible mailto trigger with prefilled name, email, and message
-    window.location.href = getMailtoUrl();
-    setSubmitted(true);
-    confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
+    setIsSubmitting(true);
+    setErrorMsg(null);
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          access_key: "2d71d17c-1863-47e4-beee-198616e633a4",
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          subject: `🚀 Portfolio Message from ${formData.name || 'Visitor'}`,
+          from_name: `${formData.name || 'Visitor'} (Portfolio)`,
+          replyto: formData.email,
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitted(true);
+        confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
+      } else {
+        throw new Error(data.message || "Failed to deliver message");
+      }
+    } catch (err: any) {
+      console.error("Web3Forms delivery error:", err);
+      setErrorMsg(
+        "Direct delivery failed. You can send your message directly via email:"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
 
@@ -205,9 +239,9 @@ export const ContactSection: React.FC = () => {
                   <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center text-emerald-400 mx-auto">
                     <Check className="w-7 h-7" />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Message Delivered!</h3>
+                  <h3 className="text-xl font-bold text-white">Message Delivered to Sarthak!</h3>
                   <p className="text-sm text-gray-300 max-w-sm mx-auto">
-                    Thank you for reaching out! Your message has been sent to Sarthak. I will review it and reply promptly.
+                    Thank you for reaching out! Your message has been delivered directly to Sarthak's Gmail inbox. I will review it and reply promptly.
                   </p>
 
                   {/* Direct 1-Click Backup */}
@@ -295,10 +329,17 @@ export const ContactSection: React.FC = () => {
                   <div className="pt-2">
                     <button
                       type="submit"
-                      className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-sm shadow-lg shadow-red-600/30 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.01]"
+                      disabled={isSubmitting}
+                      className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-sm shadow-lg shadow-red-600/30 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.01] disabled:opacity-50"
                     >
-                      <Send className="w-4 h-4" />
-                      <span>Send Message to Sarthak</span>
+                      {isSubmitting ? (
+                        <span>Sending to Sarthak's Inbox...</span>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>Send Message to Sarthak</span>
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>
