@@ -38,7 +38,16 @@ export const Footer: React.FC = () => {
           <span>•</span>
           <a
             href="mailto:sarthakt579@gmail.com"
-            className="text-red-400 hover:text-red-300 transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              const isMobile = typeof window !== 'undefined' && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+              if (isMobile) {
+                window.location.href = 'mailto:sarthakt579@gmail.com';
+              } else {
+                window.open('https://mail.google.com/mail/?view=cm&fs=1&to=sarthakt579@gmail.com', '_blank');
+              }
+            }}
+            className="text-red-400 hover:text-red-300 transition-colors cursor-pointer"
             title="Send email to sarthakt579@gmail.com"
           >
             sarthakt579@gmail.com

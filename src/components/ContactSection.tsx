@@ -37,21 +37,26 @@ export const ContactSection: React.FC = () => {
     setTimeout(() => setCopiedPhone(false), 2000);
   };
 
-  const getMailtoUrl = () => {
-    const hasDetails = formData.name || formData.email || formData.message;
-    if (!hasDetails) {
-      return `mailto:${email}`;
+  const openEmail = (customSubject?: string, customBody?: string) => {
+    const subject = customSubject || (formData.name ? `Portfolio Message from ${formData.name}` : 'Portfolio Inquiry');
+    const body = customBody || (formData.message ? `Hi Sarthak,\n\nName: ${formData.name || 'Not provided'}\nEmail: ${formData.email || 'Not provided'}\n\nMessage:\n${formData.message}\n\n---\nSent from Portfolio Website` : '');
+    
+    const subParam = encodeURIComponent(subject);
+    const bodyParam = encodeURIComponent(body);
+
+    const isMobile = typeof window !== 'undefined' && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      window.location.href = `mailto:${email}?subject=${subParam}&body=${bodyParam}`;
+    } else {
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subParam}&body=${bodyParam}`;
+      window.open(gmailUrl, '_blank');
     }
-    const subject = encodeURIComponent(`Portfolio Message from ${formData.name || 'Visitor'}`);
-    const body = encodeURIComponent(
-      `Hi Sarthak,\n\nName: ${formData.name || 'Not provided'}\nEmail: ${formData.email || 'Not provided'}\n\nMessage:\n${formData.message}\n\n---\nSent from Portfolio Website`
-    );
-    return `mailto:${email}?subject=${subject}&body=${body}`;
   };
 
   const handleSendViaEmailApp = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    window.location.href = getMailtoUrl();
+    openEmail();
     setSubmitted(true);
     confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
   };
@@ -140,8 +145,12 @@ export const ContactSection: React.FC = () => {
                     <h4 className="text-xs font-mono text-gray-400 uppercase">Direct Email</h4>
                     <a
                       href={`mailto:${email}`}
-                      className="text-sm font-semibold text-white hover:text-red-400 transition-colors inline-flex items-center gap-1"
-                      title="Send email via mailto link"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        openEmail();
+                      }}
+                      className="text-sm font-semibold text-white hover:text-red-400 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                      title="Send email to sarthakt579@gmail.com"
                     >
                       <span>{email}</span>
                       <ExternalLink className="w-3 h-3 text-red-400" />
@@ -252,7 +261,7 @@ export const ContactSection: React.FC = () => {
                       className="px-4 py-2 rounded-xl bg-red-600/30 hover:bg-red-600 text-red-300 hover:text-white text-xs font-semibold border border-red-500/40 flex items-center gap-1.5 transition-colors"
                     >
                       <Mail className="w-3.5 h-3.5" />
-                      <span>Send Direct Copy via mailto</span>
+                      <span>Send Direct Copy via Email</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </button>
 
