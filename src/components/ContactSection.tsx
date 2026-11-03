@@ -19,6 +19,7 @@ export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const email = "sarthakt579@gmail.com";
   const phone = "+91 6377525805";
@@ -36,13 +37,48 @@ export const ContactSection: React.FC = () => {
     setTimeout(() => setCopiedPhone(false), 2000);
   };
 
+  const getGmailComposeUrl = () => {
+    const subject = encodeURIComponent(`Portfolio Message from ${formData.name || 'Visitor'}`);
+    const body = encodeURIComponent(
+      `Hi Sarthak,\n\nName: ${formData.name || 'Not provided'}\nEmail: ${formData.email || 'Not provided'}\n\nMessage:\n${formData.message}\n\n---\nSent from Portfolio Website`
+    );
+    return `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`;
+  };
+
+  const getMailtoUrl = () => {
+    const subject = encodeURIComponent(`Portfolio Message from ${formData.name || 'Visitor'}`);
+    const body = encodeURIComponent(
+      `Hi Sarthak,\n\nName: ${formData.name || 'Not provided'}\nEmail: ${formData.email || 'Not provided'}\n\nMessage:\n${formData.message}\n\n---\nSent from Portfolio Website`
+    );
+    return `mailto:${email}?subject=${subject}&body=${body}`;
+  };
+
+  const handleSendViaEmailApp = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!formData.message.trim()) {
+      setErrorMsg("Please enter a message before sending.");
+      return;
+    }
+
+    const isMobile = typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = getMailtoUrl();
+    } else {
+      window.open(getGmailComposeUrl(), '_blank');
+    }
+
+    setSubmitted(true);
+    confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
     setIsSubmitting(true);
 
     try {
-      // Activated FormSubmit token routing directly to sarthakt579@gmail.com
-      await fetch("https://formsubmit.co/ajax/1cb99c99739ff613489bb182e933c2f0", {
+      // Send directly to sarthakt579@gmail.com
+      const res = await fetch("https://formsubmit.co/ajax/sarthakt579@gmail.com", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,11 +94,23 @@ export const ContactSection: React.FC = () => {
         })
       });
 
+      if (!res.ok) {
+        throw new Error(`Server status: ${res.status}`);
+      }
+
+      const result = await res.json();
+      if (result.success === "false" || result.error) {
+        throw new Error(result.message || "Submission failed");
+      }
+
       setSubmitted(true);
       confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
     } catch (err) {
       console.error("Form delivery error:", err);
-      setSubmitted(true);
+      // If third-party API is slow, down, or requires initial confirmation, inform user and offer direct 1-click email launch
+      setErrorMsg(
+        "Direct web delivery is currently queuing or requires initial activation. Click 'Open in Gmail / Email App' below to send your message directly without losing any text!"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -214,24 +262,20 @@ export const ContactSection: React.FC = () => {
 
                   {/* Direct 1-Click Backup */}
                   <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
-                    <a
-                      href={`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(
-                        `Portfolio Message from ${formData.name || 'Visitor'}`
-                      )}&body=${encodeURIComponent(
-                        `Hi Sarthak,\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      type="button"
+                      onClick={() => handleSendViaEmailApp()}
                       className="px-4 py-2 rounded-xl bg-red-600/30 hover:bg-red-600 text-red-300 hover:text-white text-xs font-semibold border border-red-500/40 flex items-center gap-1.5 transition-colors"
                     >
                       <Mail className="w-3.5 h-3.5" />
-                      <span>Open Directly in Gmail</span>
+                      <span>Send Direct Copy via Gmail / Mail App</span>
                       <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
+                    </button>
 
                     <button
                       onClick={() => {
                         setSubmitted(false);
+                        setErrorMsg(null);
                         setFormData({ name: '', email: '', message: '' });
                       }}
                       className="px-4 py-2 rounded-xl bg-gray-900 text-gray-300 text-xs font-semibold hover:bg-gray-800 border border-gray-700"
@@ -284,20 +328,46 @@ export const ContactSection: React.FC = () => {
                     />
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-sm shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
-                  >
-                    {isSubmitting ? (
-                      <span>Sending Message...</span>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4" />
-                        <span>Send Message to Sarthak</span>
-                      </>
-                    )}
-                  </button>
+                  {errorMsg && (
+                    <div className="p-3.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs space-y-2">
+                      <p className="leading-relaxed">{errorMsg}</p>
+                      <button
+                        type="button"
+                        onClick={() => handleSendViaEmailApp()}
+                        className="w-full py-2.5 px-3 rounded-lg bg-amber-500 text-black font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-amber-400 transition-colors shadow-md"
+                      >
+                        <Mail className="w-3.5 h-3.5" />
+                        <span>Open & Send in Gmail / Mail App (Guaranteed Delivery)</span>
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-xs sm:text-sm shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] disabled:opacity-50"
+                    >
+                      {isSubmitting ? (
+                        <span>Sending via Web Form...</span>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>Send via Web Form</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleSendViaEmailApp()}
+                      className="py-3 px-4 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-200 font-semibold text-xs sm:text-sm border border-gray-700/80 hover:border-red-500/40 flex items-center justify-center gap-2 transition-colors"
+                      title="Direct compose in your native email app or Gmail"
+                    >
+                      <Mail className="w-4 h-4 text-red-400" />
+                      <span>Open in Gmail / Mail App</span>
+                    </button>
+                  </div>
                 </form>
               )}
 
