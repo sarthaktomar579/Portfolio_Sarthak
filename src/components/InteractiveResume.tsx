@@ -157,7 +157,7 @@ export const InteractiveResume: React.FC = () => {
                   </h3>
                   <span className="px-3 py-1 rounded-full bg-gray-900 text-gray-400 text-xs font-mono border border-gray-800 flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5" />
-                    3 Months (2026)
+                    March – June 2026
                   </span>
                 </div>
 
