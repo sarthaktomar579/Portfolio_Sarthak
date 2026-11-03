@@ -106,15 +106,15 @@ export const InteractiveResume: React.FC = () => {
             <div className="space-y-8 animate-in fade-in duration-300">
               
               {/* Role 1: Skygnosis */}
-              <div className="relative pl-8 border-l-2 border-red-500/40 space-y-2">
-                <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-red-600 border-4 border-gray-950 shadow-md" />
+              <div className="relative pl-8 border-l-2 border-blue-500/40 space-y-2">
+                <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-gray-950 shadow-md shadow-blue-500/30" />
                 
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="text-xl font-bold text-white flex items-center gap-2">
                     <span>Full Stack Developer</span>
-                    <span className="text-red-400 text-base">@ Skygnosis</span>
+                    <span className="text-blue-400 text-base">@ Skygnosis</span>
                   </h3>
-                  <span className="px-3 py-1 rounded-full bg-red-950/60 text-red-300 text-xs font-mono border border-red-500/30 flex items-center gap-1.5">
+                  <span className="px-3 py-1 rounded-full bg-blue-950/60 text-blue-300 text-xs font-mono border border-blue-500/40 flex items-center gap-1.5 shadow-sm shadow-blue-950/50">
                     <Calendar className="w-3.5 h-3.5" />
                     June 2026 – September 2026
                   </span>
@@ -124,15 +124,15 @@ export const InteractiveResume: React.FC = () => {
 
                 <ul className="space-y-2 text-sm text-gray-300 pt-2">
                   <li className="flex items-start gap-2">
-                    <span className="text-red-400 font-bold mt-1">▹</span>
+                    <span className="text-blue-400 font-bold mt-1">▹</span>
                     <span>Developed end-to-end AI-powered applications integrating Large Language Models (LLMs), speech-to-text technologies, and automated medical documentation pipelines using <strong>FastAPI</strong> and <strong>Next.js</strong>.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-red-400 font-bold mt-1">▹</span>
+                    <span className="text-blue-400 font-bold mt-1">▹</span>
                     <span>Engineered asynchronous clinical summarization workflows reducing doctor transcription overhead by automating medical records and report extraction.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-red-400 font-bold mt-1">▹</span>
+                    <span className="text-blue-400 font-bold mt-1">▹</span>
                     <span>Integrated third-party AI APIs and structured JSON schema validations to deliver high-reliability diagnostic summaries.</span>
                   </li>
                 </ul>
@@ -147,15 +147,15 @@ export const InteractiveResume: React.FC = () => {
               </div>
 
               {/* Role 2: Xelron AI */}
-              <div className="relative pl-8 border-l-2 border-gray-800 space-y-2">
-                <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-gray-700 border-4 border-gray-950" />
+              <div className="relative pl-8 border-l-2 border-cyan-500/40 space-y-2">
+                <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-cyan-500 border-4 border-gray-950 shadow-md shadow-cyan-500/30" />
                 
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="text-xl font-bold text-white flex items-center gap-2">
                     <span>Software Developer</span>
                     <span className="text-cyan-400 text-base">@ Xelron AI</span>
                   </h3>
-                  <span className="px-3 py-1 rounded-full bg-gray-900 text-gray-400 text-xs font-mono border border-gray-800 flex items-center gap-1.5">
+                  <span className="px-3 py-1 rounded-full bg-cyan-950/60 text-cyan-300 text-xs font-mono border border-cyan-500/40 flex items-center gap-1.5 shadow-sm shadow-cyan-950/50">
                     <Calendar className="w-3.5 h-3.5" />
                     March – June 2026
                   </span>
